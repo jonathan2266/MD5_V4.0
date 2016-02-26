@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using System.Net.Sockets;
-using System.Net;
 using System.Threading;
 
 namespace MD5_V4._0_C
@@ -35,7 +30,8 @@ namespace MD5_V4._0_C
         }
         public void SendStuff(string data)
         {
-
+            byte[] send = Encoding.ASCII.GetBytes(data);
+            stream.Write(send, 0, send.Length);
         }
     }
 }
