@@ -142,13 +142,54 @@ namespace MD5_V4._0_C
 
         private void WaitUntilDone()
         {
-            
+            B:
+            int DoneCounter = 0;
+            for (int i = 0; i < TList.Count; i++)
+            {
+                if (!TList[i].IsBusy)
+                {
+                    DoneCounter++;
+                }
+            }
+            if (DoneCounter != TList.Count)
+            {
+                goto B;
+            }
+
+            //now we have to write everything. this is double code too :D
+            C:
+
+            int lowest = startNr[0];
+            int nrLowest = -20;
+            for (int i = 0; i < startNr.Count; i++)
+            {
+                if (lowest > startNr[i])
+                {
+                    lowest = startNr[i];
+                    nrLowest = i;
+                }
+            }
+
+            if (lowest != -20)
+            {
+                s.SendStuff(listOfHash[nrLowest].ToString());
+                listOfHash[nrLowest].Clear();
+                startNr[nrLowest] = int.MaxValue;
+                goto C;
+            }
+
+            //now wait in a response from server
+
+            recieveJob();
+
+
+
         }
 
-        private void Bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
+        //private void Bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        //{
 
-        }
+        //}
 
         private void Bw_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -165,8 +206,6 @@ namespace MD5_V4._0_C
                 listOfHash[nr].Append(temp + Environment.NewLine);
                 listOfHash[nr].Append(h.StartHash(temp) + Environment.NewLine);
             }
-            status[nr] = true;
-            //needs to change tho
         }
     }
 }
