@@ -186,9 +186,9 @@ namespace MD5_V4._0_C
 
         private void connectToSlaves()
         {
-            byte[] identification = Encoding.ASCII.GetBytes("MD5_V4_MASTER");
-            byte[] slaveResponseBytes = new byte[256];
-            string slaveresponse;
+            //byte[] identification = Encoding.ASCII.GetBytes("MD5_V4_MASTER");
+            //byte[] slaveResponseBytes = new byte[256];
+            //string slaveresponse;
             for (int i = 0; i < IPAdressess.Count; i++)
             {
                 try
@@ -197,18 +197,18 @@ namespace MD5_V4._0_C
                     int nr = -1;
                     TcpClient client = new TcpClient(IPAdressess[i].ToString(), port);
                     NetworkStream stream = client.GetStream();
-                    stream.Write(identification,0,identification.Length);
-                    int bytes = stream.Read(slaveResponseBytes, 0, slaveResponseBytes.Length);
-                    slaveresponse = Encoding.ASCII.GetString(slaveResponseBytes, 0, bytes);
-                    if (slaveresponse == "MD5_V4_SLAVE")
-                    {
+                    //stream.Write(identification,0,identification.Length);
+                    //int bytes = stream.Read(slaveResponseBytes, 0, slaveResponseBytes.Length);
+                    //slaveresponse = Encoding.ASCII.GetString(slaveResponseBytes, 0, bytes);
+                    //if (slaveresponse == "MD5_V4_SLAVE")
+                    //{
                         nr++;
                         tcpMaster connection = new tcpMaster(client, stream,nr);
                         connection.GotData += Connection_GotData;
                         listOfTCPConnections.Add(connection);
                         PiecesWritten.Add(0);
                         
-                    }
+                    //}
                     arrayFileToWrite = new string[listOfTCPConnections.Count];
 
                 }

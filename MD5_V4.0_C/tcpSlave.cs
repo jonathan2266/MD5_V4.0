@@ -26,7 +26,8 @@ namespace MD5_V4._0_C
             byte[] recieved = new byte[80];
             stream.Read(recieved, 0, recieved.Length);
             string final = Encoding.ASCII.GetString(recieved);
-            return final;
+            string final2 =  final.Trim('\0');
+            return final2;
         }
         public void SendStuff(string data)
         {

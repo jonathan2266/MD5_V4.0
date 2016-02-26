@@ -32,9 +32,9 @@ namespace MD5_V4._0_C
             TcpClient client = listener.AcceptTcpClient();
             NetworkStream NStream = client.GetStream();//read what is send
             listener = null;
-            string identity = "MD5_V4_SLAVE";
-            byte[] buffer = Encoding.ASCII.GetBytes(identity);
-            NStream.Write(buffer, 0, buffer.Length);
+            //string identity = "MD5_V4_SLAVE";
+            //byte[] buffer = Encoding.ASCII.GetBytes(identity);
+            //NStream.Write(buffer, 0, buffer.Length);
 
             s = new tcpSlave(client, NStream);
 
