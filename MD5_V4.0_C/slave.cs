@@ -56,7 +56,7 @@ namespace MD5_V4._0_C
             {
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += Bw_DoWork;
-                bw.RunWorkerCompleted += Bw_RunWorkerCompleted;
+                //bw.RunWorkerCompleted += Bw_RunWorkerCompleted;
                 TList.Add(bw);
                 StringBuilder stringB = new StringBuilder();
                 listOfHash.Add(stringB);
