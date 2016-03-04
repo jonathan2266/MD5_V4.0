@@ -111,7 +111,7 @@ namespace MD5_V4._0_C
             string fileName;
             lastEntry = "";
 
-            lastFileNr = 1;
+            lastFileNr = 0;
 
             FolderScanner folder = new FolderScanner(mainDirectory);
             folder.RefreshIndex();
@@ -119,7 +119,6 @@ namespace MD5_V4._0_C
             date = null;
 
             int last = index.Length - 1;
-            int count = 0; //used way down
             if (last == -1)
             {
                 Console.WriteLine("whoops folder was empty making file1");
