@@ -52,10 +52,9 @@ namespace MD5_V4._0_C
                         data = new byte[sizeOfbyte];
                         if (GotData != null)
                         {
-                            GotData(this, new MyEventArgs(recieved,nr));
+                            GotData(this, new MyEventArgs(recieved,nr)); //raise event
 
                         }
-                        //raise event OR let it poll
                     }
                 }
                 catch (SocketException)
@@ -63,7 +62,8 @@ namespace MD5_V4._0_C
                     throw;
                 }
 
-                Thread.Sleep(1);
+
+                Thread.Sleep(2);
             }
         }
     }
