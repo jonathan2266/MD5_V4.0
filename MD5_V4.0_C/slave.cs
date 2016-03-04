@@ -32,9 +32,6 @@ namespace MD5_V4._0_C
             TcpClient client = listener.AcceptTcpClient();
             NetworkStream NStream = client.GetStream();//read what is send
             listener = null;
-            //string identity = "MD5_V4_SLAVE";
-            //byte[] buffer = Encoding.ASCII.GetBytes(identity);
-            //NStream.Write(buffer, 0, buffer.Length);
 
             s = new tcpSlave(client, NStream);
 
@@ -54,7 +51,6 @@ namespace MD5_V4._0_C
             {
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += Bw_DoWork;
-                //bw.RunWorkerCompleted += Bw_RunWorkerCompleted;
                 TList.Add(bw);
                 StringBuilder stringB = new StringBuilder();
                 listOfHash.Add(stringB);
@@ -107,7 +103,6 @@ namespace MD5_V4._0_C
                         threadInfo[0] = i;
                         threadInfo[1] = word;
 
-                        //A:
                         int Genericnumber = -1;
                         for (int j = 0; j < listOfHash.Count; j++)
                         {
@@ -184,10 +179,6 @@ namespace MD5_V4._0_C
 
         }
 
-        //private void Bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        //{
-
-        //}
 
         private void Bw_DoWork(object sender, DoWorkEventArgs e)
         {
