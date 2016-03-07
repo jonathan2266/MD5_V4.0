@@ -13,11 +13,12 @@ namespace MD5_V4._0_C
     {
         private int port;
         private tcpSlave s;
-        private List<BackgroundWorker> TList = new List<BackgroundWorker>();
+        private BackgroundWorker[] TList;
         private string word; //is the last word
-        private List<StringBuilder> listOfHash = new List<StringBuilder>();
-        private List<int> startNr = new List<int>();
-        private List<int> status = new List<int>();  // 0 = not finished 1 = finished (creating the hash list) 2 = written to master
+        private StringBuilder[] listOfHash;
+        private int[] startNr;
+        private int[] status;  // 0 = not finished 1 = finished (creating the hash list) 2 = written to master
+
         private int GenericCounter;
         public slave(int port)
         {
@@ -44,26 +45,30 @@ namespace MD5_V4._0_C
 
         private void recieveJob()
         {
-            listOfHash.Clear();
+            int threads = Environment.ProcessorCount - 1;
+            listOfHash = new StringBuilder[threads];
+            TList = new BackgroundWorker[threads];
+            startNr = new int[threads];
+            status = new int[threads];
+
             word = s.Recieve();
             if (word == "*")
             {
                 word = ""; //cant recieve an empty byte maybe it will when i add :: when sending
             }
-            int threads = Environment.ProcessorCount - 1;
+
             GenericCounter = 0; //gg if this ever overflows :p
             int count = 0; //offset compared to word //or max of 40 parts maybe??
 
-            TList.Clear();
             for (int i = 0; i < threads; i++)
             {
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += Bw_DoWork;
-                TList.Add(bw);
+                TList[i] = bw;
                 StringBuilder stringB = new StringBuilder();
-                listOfHash.Add(stringB);
-                status.Add(2);
-                startNr.Add(int.MaxValue);
+                listOfHash[i] = stringB;
+                status[i] = 2;
+                startNr[i] = int.MaxValue;
 
             }
 
@@ -73,7 +78,7 @@ namespace MD5_V4._0_C
 
                 int lowest = startNr[0];
                 int nrLowest = 0;
-                for (int i = 0; i < startNr.Count; i++)
+                for (int i = 0; i < startNr.Length; i++)
                 {
                     if (lowest > startNr[i])
                     {
@@ -94,12 +99,12 @@ namespace MD5_V4._0_C
                 }
 
 
-                for (int i = 0; i < TList.Count; i++)
+                for (int i = 0; i < TList.Length; i++)
                 {
                     if (!TList[i].IsBusy)
                     {
                         int Genericnumber = -1;
-                        for (int j = 0; j < listOfHash.Count; j++)
+                        for (int j = 0; j < listOfHash.Length; j++)
                         {
                             if (status[j] == 2)
                             {
@@ -110,7 +115,7 @@ namespace MD5_V4._0_C
 
                         if (Genericnumber == -1)
                         {
-                            goto A;// maybe ad a delay
+                            goto A;// maybe add a delay
                         }
 
                         count++;
@@ -143,14 +148,14 @@ namespace MD5_V4._0_C
             Console.WriteLine("WaituntilDone");
             B:
             int DoneCounter = 0;
-            for (int i = 0; i < TList.Count; i++)
+            for (int i = 0; i < TList.Length; i++)
             {
                 if (!TList[i].IsBusy)
                 {
                     DoneCounter++;
                 }
             }
-            if (DoneCounter != TList.Count)
+            if (DoneCounter != TList.Length)
             {
                 goto B;
             }
@@ -160,7 +165,7 @@ namespace MD5_V4._0_C
 
             int lowest = startNr[0];
             int nrLowest = 0;
-            for (int i = 0; i < startNr.Count; i++)
+            for (int i = 0; i < startNr.Length; i++)
             {
                 if (lowest > startNr[i])
                 {

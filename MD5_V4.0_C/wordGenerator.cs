@@ -583,6 +583,7 @@ namespace MD5_V2
                 }
                 if (check == 0)
                 {
+                    loopCount++;
                     tempList.Add(loopCount);
                     break;
                 }
