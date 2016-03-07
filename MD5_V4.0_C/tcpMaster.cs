@@ -18,6 +18,7 @@ namespace MD5_V4._0_C
         private int sizeOfbyte = 100000000;
         public event MyEventHandler GotData;
         private int nr;
+        private int delMe = 0;
         
         public tcpMaster(TcpClient client, NetworkStream stream,int nr)
         {
@@ -62,6 +63,8 @@ namespace MD5_V4._0_C
                                     string responseData = data.ToString(1, i - 1); // other borders to remove the :
                                     if (GotData != null)
                                     {
+                                        delMe++;
+                                        Console.WriteLine(delMe);
                                         GotData(this, new MyEventArgs(responseData, nr)); //raise event
 
                                     }

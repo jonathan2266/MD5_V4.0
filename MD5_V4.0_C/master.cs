@@ -72,15 +72,27 @@ namespace MD5_V4._0_C
 
         private void doMainWork()
         {
+            int indexFixer = 0;
             string lastEntry;
-            string firstUnhashedWord;
+            string firstUnhashedWord; //not realy true its still the first unhased word
             getLastCompletedFile(out lastFileNr,out lastEntry);
 
-            wordGenerator word = new wordGenerator(lastEntry);
-            firstUnhashedWord = word.NewLetter();
-            x = new wordXFromReference(lastEntry, 12500000);
+            if (lastEntry == "")
+            {
+                firstUnhashedWord = "*";
+                lastEntry = firstUnhashedWord;
+                listOfTCPConnections[0].sendData(firstUnhashedWord);
+                indexFixer++;
+                lastFileNr++;
+                StreamWriter Swriter = new StreamWriter(mainDirectory + "\\" + lastFileNr + ".RUN.txt");
+                arrayFileToWrite[0] = lastFileNr.ToString();
+                PiecesWritten[0] = 0;
+                Swriter.Close();
+            }
 
-            for (int i = 0; i < listOfTCPConnections.Count; i++)
+            x = new wordXFromReference(lastEntry, 12500000); //this jump gives lastword from read file
+
+            for (int i = indexFixer; i < listOfTCPConnections.Count; i++)
             {
                 listOfTCPConnections[i].sendData(x.DoJump());
                 lastFileNr++;

@@ -35,13 +35,21 @@ namespace MD5_V4._0_C
 
             s = new tcpSlave(client, NStream);
 
-            recieveJob();
+            while (true)
+            {
+                recieveJob();
+            }
+            
         }
 
         private void recieveJob()
         {
             listOfHash.Clear();
             word = s.Recieve();
+            if (word == "*")
+            {
+                word = ""; //cant recieve an empty byte maybe it will when i add :: when sending
+            }
             int threads = Environment.ProcessorCount - 1;
             GenericCounter = 0; //gg if this ever overflows :p
             int count = 0; //offset compared to word //or max of 40 parts maybe??
@@ -80,13 +88,8 @@ namespace MD5_V4._0_C
                     {
                         s.SendStuff(listOfHash[nrLowest].ToString());
                         listOfHash[nrLowest].Clear();
-                        status[nrLowest] = 2;
+                        status[nrLowest] = 2; //written to master
                         startNr[nrLowest] = int.MaxValue;
-                    }
-                    if (status[nrLowest] == 3) //written then find next one in line
-                    {
-                        startNr[nrLowest] = int.MaxValue;
-                        goto A;
                     }
                 }
 
@@ -187,6 +190,10 @@ namespace MD5_V4._0_C
             object[] info = e.Argument as object[];
             int nr = (int)info[2];
             string word = (string)info[1];
+            if (word == null)
+            {
+                word = "";
+            }
             wordGenerator w = new wordGenerator(word);
             hasher h = new hasher();
             int amount = 12500000 / 400;
