@@ -15,7 +15,6 @@ namespace MD5_V4._0_C
         private NetworkStream stream;
         private bool run = true;
         private byte[] buffer;
-        private string responseData;
         private int sizeOfbyte = 100000000;
         public event MyEventHandler GotData;
         private int nr;
@@ -33,8 +32,6 @@ namespace MD5_V4._0_C
         public void sendData(string data)
         {
             byte[] bdata = Encoding.ASCII.GetBytes(data);
-            byte[] header = Encoding.ASCII.GetBytes(":" + bdata.Length + ":");
-            stream.Write(header, 0, header.Length);
             stream.Write(bdata, 0, bdata.Length);
         }
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
@@ -68,7 +65,7 @@ namespace MD5_V4._0_C
                                         GotData(this, new MyEventArgs(responseData, nr)); //raise event
 
                                     }
-                                    data.Remove(0, i);
+                                    data.Remove(0, i + 1);
                                     goto B;
                                 }
                             }

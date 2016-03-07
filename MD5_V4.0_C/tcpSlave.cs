@@ -33,6 +33,7 @@ namespace MD5_V4._0_C
         {
             string final = ":" + data + ":";
             byte[] send = Encoding.ASCII.GetBytes(final);
+            System.Console.WriteLine(final.Length);
             stream.Write(send, 0, send.Length);
         }
     }

@@ -43,7 +43,7 @@ namespace MD5_V4._0_C
             listOfHash.Clear();
             word = s.Recieve();
             int threads = Environment.ProcessorCount - 1;
-            GenericCounter = Environment.ProcessorCount; //gg if this ever overflows :p
+            GenericCounter = 0; //gg if this ever overflows :p
             int count = 0; //offset compared to word //or max of 40 parts maybe??
 
             TList.Clear();
@@ -80,6 +80,7 @@ namespace MD5_V4._0_C
                     {
                         s.SendStuff(listOfHash[nrLowest].ToString());
                         listOfHash[nrLowest].Clear();
+                        status[nrLowest] = 2;
                         startNr[nrLowest] = int.MaxValue;
                     }
                     if (status[nrLowest] == 3) //written then find next one in line
@@ -94,15 +95,6 @@ namespace MD5_V4._0_C
                 {
                     if (!TList[i].IsBusy)
                     {
-                        count++;
-                        if (count >= 400)
-                        {
-                            WaitUntilDone();
-                        }
-                        object[] threadInfo = new object[3];
-                        threadInfo[0] = i;
-                        threadInfo[1] = word;
-
                         int Genericnumber = -1;
                         for (int j = 0; j < listOfHash.Count; j++)
                         {
@@ -118,6 +110,15 @@ namespace MD5_V4._0_C
                             goto A;// maybe ad a delay
                         }
 
+                        count++;
+                        Console.WriteLine("count: " + count);
+                        if (count > 400)
+                        {
+                            WaitUntilDone();
+                        }
+                        object[] threadInfo = new object[3];
+                        threadInfo[0] = i;
+                        threadInfo[1] = word;
                         threadInfo[2] = Genericnumber;
 
                         //now change word to the next one 1250000/400
@@ -136,6 +137,7 @@ namespace MD5_V4._0_C
 
         private void WaitUntilDone()
         {
+            Console.WriteLine("WaituntilDone");
             B:
             int DoneCounter = 0;
             for (int i = 0; i < TList.Count; i++)
@@ -164,7 +166,7 @@ namespace MD5_V4._0_C
                 }
             }
 
-            if (lowest != -20)
+            if (lowest != int.MaxValue)
             {
                 s.SendStuff(listOfHash[nrLowest].ToString());
                 listOfHash[nrLowest].Clear();
@@ -180,7 +182,6 @@ namespace MD5_V4._0_C
 
         }
 
-
         private void Bw_DoWork(object sender, DoWorkEventArgs e)
         {
             object[] info = e.Argument as object[];
@@ -188,14 +189,16 @@ namespace MD5_V4._0_C
             string word = (string)info[1];
             wordGenerator w = new wordGenerator(word);
             hasher h = new hasher();
+            int amount = 12500000 / 400;
 
             string temp;
-            for (int i = 0; i < 12500000/400; i++)
+            for (int i = 0; i < amount; i++)
             {
                 temp = w.NewLetter();
                 listOfHash[nr].Append(temp + Environment.NewLine);
                 listOfHash[nr].Append(h.StartHash(temp) + Environment.NewLine);
             }
+            status[nr] = 1;
         }
     }
 }

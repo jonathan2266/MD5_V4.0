@@ -201,6 +201,7 @@ namespace MD5_V4._0_C
             object[] recieved = e.GetInfo();
             int who = (int)recieved[1];
             PiecesWritten[who]++;
+            Console.WriteLine("PiecesWritten " + PiecesWritten[who]);
             if (PiecesWritten[who] == 400)
             {
                 PiecesWritten[who] = 0;
