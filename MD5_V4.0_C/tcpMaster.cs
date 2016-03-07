@@ -14,7 +14,7 @@ namespace MD5_V4._0_C
         private TcpClient client;
         private NetworkStream stream;
         private bool run = true;
-        private byte[] data;
+        private byte[] buffer;
         private string responseData;
         private int sizeOfbyte = 100000000;
         public event MyEventHandler GotData;
@@ -33,12 +33,14 @@ namespace MD5_V4._0_C
         public void sendData(string data)
         {
             byte[] bdata = Encoding.ASCII.GetBytes(data);
+            byte[] header = Encoding.ASCII.GetBytes(":" + bdata.Length + ":");
+            stream.Write(header, 0, header.Length);
             stream.Write(bdata, 0, bdata.Length);
         }
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            List<char> recieved = new List<char>();
-            data = new byte[sizeOfbyte];
+            buffer = new byte[sizeOfbyte];
+            StringBuilder data = new StringBuilder();
 
             while (run)
             {
@@ -46,14 +48,30 @@ namespace MD5_V4._0_C
                 {
                     if (stream.DataAvailable)
                     {
-                        int nrbytes = stream.Read(data, 0, data.Length);
-                        responseData = Encoding.ASCII.GetString(data, 0, nrbytes);
-                        sizeOfbyte = nrbytes + 100;
-                        data = new byte[sizeOfbyte];
-                        if (GotData != null)
-                        {
-                            GotData(this, new MyEventArgs(recieved,nr)); //raise event
+                        int nrbytes = stream.Read(buffer, 0, buffer.Length);
+                        data.Append(Encoding.ASCII.GetString(buffer, 0, nrbytes));
+                        buffer = new byte[nrbytes + 100];
 
+                        B: //to check if there is more usefull stuff to write away at this time
+
+                        int count = 0;
+                        for (int i = 0; i < data.Length; i++)
+                        {
+                            if (data[i] == ':')
+                            {
+                                count++;
+                                if (count == 2)
+                                {
+                                    string responseData = data.ToString(1, i - 1); // other borders to remove the :
+                                    if (GotData != null)
+                                    {
+                                        GotData(this, new MyEventArgs(responseData, nr)); //raise event
+
+                                    }
+                                    data.Remove(0, i);
+                                    goto B;
+                                }
+                            }
                         }
                     }
                 }
@@ -61,7 +79,6 @@ namespace MD5_V4._0_C
                 {
                     throw;
                 }
-
 
                 Thread.Sleep(2);
             }
@@ -71,7 +88,7 @@ namespace MD5_V4._0_C
     public class MyEventArgs : EventArgs
     {
         private object[] EventInfo = new object[2];
-        public MyEventArgs(List<char> recieved, int nr)
+        public MyEventArgs(string recieved, int nr)
         {
             EventInfo[0] = recieved;
             EventInfo[1] = nr;

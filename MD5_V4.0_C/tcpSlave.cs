@@ -31,7 +31,8 @@ namespace MD5_V4._0_C
         }
         public void SendStuff(string data)
         {
-            byte[] send = Encoding.ASCII.GetBytes(data);
+            string final = ":" + data + ":";
+            byte[] send = Encoding.ASCII.GetBytes(final);
             stream.Write(send, 0, send.Length);
         }
     }

@@ -106,7 +106,7 @@ namespace MD5_V4._0_C
                         int Genericnumber = -1;
                         for (int j = 0; j < listOfHash.Count; j++)
                         {
-                            if (listOfHash[j].ToString() == "" && status[j] == 2)
+                            if (status[j] == 2)
                             {
                                 Genericnumber = j;
                                 break;
@@ -121,6 +121,7 @@ namespace MD5_V4._0_C
                         threadInfo[2] = Genericnumber;
 
                         //now change word to the next one 1250000/400
+                        status[Genericnumber] = 0;
                         TList[i].RunWorkerAsync(threadInfo);
                         wordXFromReference x = new wordXFromReference(word, 31250);
                         word = x.DoJump();
@@ -153,7 +154,7 @@ namespace MD5_V4._0_C
             C:
 
             int lowest = startNr[0];
-            int nrLowest = -20;
+            int nrLowest = 0;
             for (int i = 0; i < startNr.Count; i++)
             {
                 if (lowest > startNr[i])
