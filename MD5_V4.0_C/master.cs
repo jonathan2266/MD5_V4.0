@@ -84,7 +84,7 @@ namespace MD5_V4._0_C
                 listOfTCPConnections[0].sendData(firstUnhashedWord);
                 indexFixer++;
                 lastFileNr++;
-                StreamWriter Swriter = new StreamWriter(mainDirectory + "\\" + lastFileNr + ".RUN.txt");
+                StreamWriter Swriter = new StreamWriter(mainDirectory + lastFileNr + ".RUN.txt");
                 arrayFileToWrite[0] = lastFileNr.ToString();
                 PiecesWritten[0] = 0;
                 Swriter.Close();
@@ -96,7 +96,7 @@ namespace MD5_V4._0_C
             {
                 listOfTCPConnections[i].sendData(x.DoJump());
                 lastFileNr++;
-                StreamWriter Swriter = new StreamWriter(mainDirectory + "\\" + lastFileNr + ".RUN.txt");
+                StreamWriter Swriter = new StreamWriter(mainDirectory + lastFileNr + ".RUN.txt");
                 arrayFileToWrite[i] = lastFileNr.ToString();
                 PiecesWritten[i] = 0;
                 Swriter.Close();
@@ -134,7 +134,7 @@ namespace MD5_V4._0_C
             if (last == -1)
             {
                 Console.WriteLine("whoops folder was empty making file1");
-                fileName = "\\1.RUN.txt";
+                fileName = "1.RUN.txt";
                 lastEntry = "";
             }
             else
@@ -162,7 +162,7 @@ namespace MD5_V4._0_C
 
                 lastFileNr = Convert.ToInt32(fileName);
 
-                fileName = "\\" + fileName + ".txt";
+                fileName = fileName + ".txt";
 
                 StreamReader reader = new StreamReader(folder.Directory1 + fileName);
                 lastEntry = reader.ReadLine();
@@ -218,11 +218,11 @@ namespace MD5_V4._0_C
             {
                 PiecesWritten[who] = 0;
                 write(recieved);
-                File.Move((mainDirectory + "\\" + arrayFileToWrite[(int)recieved[1]] + ".RUN.txt"), mainDirectory + "\\" + arrayFileToWrite[(int)recieved[1]] + ".txt");
+                File.Move((mainDirectory + arrayFileToWrite[(int)recieved[1]] + ".RUN.txt"), mainDirectory + arrayFileToWrite[(int)recieved[1]] + ".txt");
 
                 listOfTCPConnections[who].sendData(x.DoJump());
                 lastFileNr++;
-                StreamWriter Swriter = new StreamWriter(mainDirectory + "\\" + lastFileNr + ".RUN.txt");
+                StreamWriter Swriter = new StreamWriter(mainDirectory + lastFileNr + ".RUN.txt");
                 arrayFileToWrite[who] = lastFileNr.ToString();
                 PiecesWritten[who] = 0;
                 Swriter.Close();
@@ -238,7 +238,7 @@ namespace MD5_V4._0_C
 
         private void write(object[] recieved)
         {
-            StreamWriter writer = File.AppendText(mainDirectory + "\\" + arrayFileToWrite[(int)recieved[1]] + ".RUN.txt");
+            StreamWriter writer = File.AppendText(mainDirectory + arrayFileToWrite[(int)recieved[1]] + ".RUN.txt");
             writer.WriteAsync((string)recieved[0]);
             //writer.Write((string)recieved[0]);
             writer.Close();
