@@ -239,7 +239,8 @@ namespace MD5_V4._0_C
         private void write(object[] recieved)
         {
             StreamWriter writer = File.AppendText(mainDirectory + "\\" + arrayFileToWrite[(int)recieved[1]] + ".RUN.txt");
-            writer.Write((string)recieved[0]);
+            writer.WriteAsync((string)recieved[0]);
+            //writer.Write((string)recieved[0]);
             writer.Close();
         }
         private void selectMainDirectory()
