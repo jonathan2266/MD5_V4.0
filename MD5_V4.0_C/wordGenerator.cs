@@ -132,6 +132,14 @@ namespace MD5_V2
 
             for (int i = 0; i < intForm.Length; i++)
             {
+                if (i > 0 && i + 1 < intForm.Length)
+                {
+                    intForm[i]++;
+                }
+                if (i == intForm.Length - 1)
+                {
+                    intForm[i]--;
+                }
                 a.Append(l.NumberToString(intForm[i]));
             }
 
@@ -156,6 +164,7 @@ namespace MD5_V2
                 }
                 if (check == 0)
                 {
+                    power--; //added
                     break;
                 }
                 if (check <= 0)
