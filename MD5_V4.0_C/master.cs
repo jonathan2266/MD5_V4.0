@@ -182,12 +182,12 @@ namespace MD5_V4._0_C
 
         private void connectToSlaves()
         {
+            int nr = -1;
             for (int i = 0; i < IPAdressess.Count; i++)
             {
                 try
                 {
-                    int port = 8001;
-                    int nr = -1;
+                    int port = 8001; //don't forget to open this port like me for linux :p
                     TcpClient client = new TcpClient(IPAdressess[i].ToString(), port);
                     NetworkStream stream = client.GetStream();
                     nr++;
@@ -210,6 +210,7 @@ namespace MD5_V4._0_C
 
         private void Connection_GotData(object source, MyEventArgs e)
         {
+            Console.WriteLine("called_gotdata");
             object[] recieved = e.GetInfo();
             int who = (int)recieved[1];
             PiecesWritten[who]++;
@@ -226,8 +227,6 @@ namespace MD5_V4._0_C
                 arrayFileToWrite[who] = lastFileNr.ToString();
                 PiecesWritten[who] = 0;
                 Swriter.Close();
-
-
             }
             else
             {
@@ -239,8 +238,7 @@ namespace MD5_V4._0_C
         private void write(object[] recieved)
         {
             StreamWriter writer = File.AppendText(mainDirectory + arrayFileToWrite[(int)recieved[1]] + ".RUN.txt");
-            writer.WriteAsync((string)recieved[0]);
-            //writer.Write((string)recieved[0]);
+            writer.Write((string)recieved[0]);
             writer.Close();
         }
         private void selectMainDirectory()

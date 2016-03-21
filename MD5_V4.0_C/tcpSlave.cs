@@ -8,7 +8,6 @@ namespace MD5_V4._0_C
     {
         private NetworkStream stream;
         private TcpClient client;
-        private int count = 0;
         public tcpSlave(TcpClient client, NetworkStream stream)
         {
             this.client = client;
@@ -32,10 +31,8 @@ namespace MD5_V4._0_C
         }
         public void SendStuff(string data)
         {
-            count++;
             string final = ":" + data + ":";
             byte[] send = Encoding.ASCII.GetBytes(final);
-            System.Console.WriteLine(count);
             stream.WriteAsync(send, 0, send.Length); //fixed everything for some reason
         }
     }

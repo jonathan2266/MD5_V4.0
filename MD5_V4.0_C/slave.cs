@@ -45,6 +45,7 @@ namespace MD5_V4._0_C
 
         private void recieveJob()
         {
+            bool working = true;
             int threads = Environment.ProcessorCount - 1;
             listOfHash = new StringBuilder[threads];
             TList = new BackgroundWorker[threads];
@@ -57,8 +58,8 @@ namespace MD5_V4._0_C
                 word = ""; //cant recieve an empty byte maybe it will when i add :: when sending
             }
 
-            GenericCounter = 0; //gg if this ever overflows :p
-            int count = 0; //offset compared to word //or max of 40 parts maybe??
+            GenericCounter = -1; //gg if this ever overflows :p
+            int count = -1; //offset compared to word //or max of 40 parts maybe??
 
             for (int i = 0; i < threads; i++)
             {
@@ -72,10 +73,11 @@ namespace MD5_V4._0_C
 
             }
 
-            while (true)
+            while (working)
             {
                 A:
 
+                //we look for the lowest startNr
                 int lowest = startNr[0];
                 int nrLowest = 0;
                 for (int i = 0; i < startNr.Length; i++)
@@ -87,6 +89,7 @@ namespace MD5_V4._0_C
                     }
                 }
 
+                //Now we look if we can do anything with the corresponding data if not we wait!!
                 if (lowest != int.MaxValue)
                 {
                     if (status[nrLowest] == 1) //finished but not written
@@ -115,15 +118,26 @@ namespace MD5_V4._0_C
 
                         if (Genericnumber == -1)
                         {
+                            Thread.Sleep(2);
                             goto A;// maybe add a delay
                         }
 
                         count++;
-                        Console.WriteLine("count: " + count);
-                        if (count > 400)
+                        if (count >= 400)
                         {
                             WaitUntilDone();
+                            working = false;
+                            break;
                         }
+
+                        GenericCounter++;
+                        startNr[i] = GenericCounter;
+                        Console.WriteLine("GenericCounter: " + GenericCounter);
+                        for (int z = 0; z < startNr.Length; z++)
+                        {
+                            Console.WriteLine(startNr[z]);
+                        }
+
                         object[] threadInfo = new object[3];
                         threadInfo[0] = i;
                         threadInfo[1] = word;
@@ -135,8 +149,6 @@ namespace MD5_V4._0_C
                         wordXFromReference x = new wordXFromReference(word, 31250);
                         word = x.DoJump();
 
-                        GenericCounter++;
-                        startNr[i] = GenericCounter;
                     }
                 }
                 Thread.Sleep(10);
@@ -146,6 +158,7 @@ namespace MD5_V4._0_C
         private void WaitUntilDone()
         {
             Console.WriteLine("WaituntilDone");
+
             B:
             int DoneCounter = 0;
             for (int i = 0; i < TList.Length; i++)
@@ -153,6 +166,7 @@ namespace MD5_V4._0_C
                 if (!TList[i].IsBusy)
                 {
                     DoneCounter++;
+                    Console.WriteLine(DoneCounter);
                 }
             }
             if (DoneCounter != TList.Length)
@@ -183,8 +197,8 @@ namespace MD5_V4._0_C
             }
 
             //now wait in a response from server
-
-            recieveJob();
+            Console.WriteLine("RecieveNewJob");
+            //recieveJob();
 
 
 
@@ -210,6 +224,8 @@ namespace MD5_V4._0_C
                 listOfHash[nr].Append(temp + Environment.NewLine);
                 listOfHash[nr].Append(h.StartHash(temp) + Environment.NewLine);
             }
+            listOfHash[nr].Clear();
+            listOfHash[nr].Append(startNr[nr] + Environment.NewLine);
             status[nr] = 1;
         }
     }

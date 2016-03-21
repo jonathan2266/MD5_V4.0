@@ -64,7 +64,7 @@ namespace MD5_V4._0_C
                                     if (GotData != null)
                                     {
                                         delMe++;
-                                        Console.WriteLine(delMe);
+                                        Console.WriteLine("DataRecieved: " + delMe);
                                         GotData(this, new MyEventArgs(responseData, nr)); //raise event
 
                                     }
