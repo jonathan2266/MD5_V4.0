@@ -88,7 +88,7 @@ namespace MD5_V4._0_C
                         }
                     }
                 }
-                if (subCount <= 400)
+                if (subCount >= 400)
                 {
                     int emptyCount = 0;
                     for (int i = 0; i < status.Length; i++)
@@ -123,6 +123,7 @@ namespace MD5_V4._0_C
             {
                 s.SendStuff(listOfHash[nr].ToString());
                 listOfHash[nr].Clear();
+                startNr[nr] = int.MaxValue;
                 status[nr] = 2;
             }
         }
